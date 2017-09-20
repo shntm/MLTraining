@@ -3,6 +3,7 @@ import numpy as np
 from sklearn import tree, preprocessing
 import graphviz
 dataset = pd.read_csv('train-1.csv')
+feature_names = list(dataset)
 dataset["Embarked"] = dataset["Embarked"].fillna('0')
 dataset["Age"] = dataset["Age"].fillna(-1)
 dataset.describe();
@@ -13,6 +14,7 @@ targetClassName = ['died', 'survived']
 embarkPointArray = ['S', 'Q', 'C', '0']
 genderArray = ['male', 'female']
 usableData = np.delete(datasetArr,[0,1,3,8,10], 1)
+featureNames = np.delete(feature_names,[0,1,3,8,10])
 lblEncoder = preprocessing.LabelEncoder()
 lblEncoderForGender = preprocessing.LabelEncoder()
 lblEncoder.fit(embarkPointArray)
@@ -29,12 +31,12 @@ testData = usableData[-5:,:]
 targetTrainingData = targetData[:-5]
 targetTestData = targetData[-5:]
 
-
+print(featureNames)
 clf = tree.DecisionTreeClassifier()
 clf.fit(trainingData, targetTrainingData)
 predictionData = clf.predict(testData)
 print(predictionData)
 print(targetTestData)
-dot_data = tree.export_graphviz(clf, out_file=None)
+dot_data = tree.export_graphviz(clf, out_file=None, feature_names = featureNames)
 graph = graphviz.Source(dot_data)
 graph.render("titanic_tree")
