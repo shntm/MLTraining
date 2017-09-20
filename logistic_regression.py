@@ -1,6 +1,6 @@
 from sklearn import datasets, metrics
 from sklearn import linear_model
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import numpy
 
 #load breast cancer dataset
@@ -24,15 +24,15 @@ testTargetData = targetData[-50:]
 #load model
 model = linear_model.LogisticRegression()
 model.fit(combinedInput, targetInput)
-predOutput = model.predict(combinedTest)
+predOutput = model.predict_proba(combinedTest)
 
 #final prediction vs actual outputs for comparision
 print(predOutput)
-print(testTargetData)
+# print(testTargetData)
 
 #reports to measure accuracy
-print(metrics.classification_report(testTargetData, predOutput))
-print(metrics.confusion_matrix(testTargetData, predOutput))
+# print(metrics.classification_report(testTargetData, predOutput))
+# print(metrics.confusion_matrix(testTargetData, predOutput))
 # plt.scatter(radiusData, targetData)
 # plt.show()
 # print(data.data[:,0])

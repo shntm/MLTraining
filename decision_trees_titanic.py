@@ -1,7 +1,9 @@
 import pandas as pd
 import numpy as np
-from sklearn import tree, preprocessing
+from sklearn import tree, preprocessing, metrics, linear_model
 import graphviz
+samplesToTest = 100
+samplesToTest = -1*samplesToTest
 dataset = pd.read_csv('train-1.csv')
 feature_names = list(dataset)
 dataset["Embarked"] = dataset["Embarked"].fillna('0')
@@ -26,17 +28,27 @@ usableData[:,1] = lblEncoderForGender.transform(usableData[:,1])
 # print(lblEncoderForGender.inverse_transform(usableData[:,1].astype(int)))
 usableData = np.asarray(usableData, dtype=np.float64)
 # print(usableData)
-trainingData = usableData[:-5,:]
-testData = usableData[-5:,:]
-targetTrainingData = targetData[:-5]
-targetTestData = targetData[-5:]
+trainingData = usableData[:samplesToTest,:]
+testData = usableData[samplesToTest:,:]
+targetTrainingData = targetData[:samplesToTest]
+targetTestData = targetData[samplesToTest:]
 
 print(featureNames)
-clf = tree.DecisionTreeClassifier()
-clf.fit(trainingData, targetTrainingData)
-predictionData = clf.predict(testData)
-print(predictionData)
+clftree = tree.DecisionTreeClassifier()
+clftree.fit(trainingData, targetTrainingData)
+predictionDataTree = clftree.predict(testData)
+
+clrLoRegr = linear_model.LogisticRegression()
+clrLoRegr.fit(trainingData, targetTrainingData)
+predictionDateLoRegr = clrLoRegr.predict(testData)
+
+print(predictionDataTree)
+print(predictionDateLoRegr)
 print(targetTestData)
-dot_data = tree.export_graphviz(clf, out_file=None, feature_names = featureNames)
-graph = graphviz.Source(dot_data)
-graph.render("titanic_tree")
+print(metrics.accuracy_score(targetTestData,predictionDataTree))
+print(metrics.confusion_matrix(targetTestData, predictionDataTree))
+print(metrics.accuracy_score(targetTestData,predictionDateLoRegr))
+print(metrics.confusion_matrix(targetTestData, predictionDateLoRegr))
+# dot_data = tree.export_graphviz(clf, out_file=None, feature_names = featureNames)
+# graph = graphviz.Source(dot_data)
+# graph.render("titanic_tree")
